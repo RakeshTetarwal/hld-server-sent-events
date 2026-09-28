@@ -1,12 +1,12 @@
 import json
 from typing import Optional
 import redis.asyncio as aioredis
-from src.interfaces.publishers import INotificationPublisher
+from src.interfaces.publishers import NotificationPublisher
 from src.domain.value_objects import BidResult
 
 
-class RedisNotificationPublisher(INotificationPublisher):
-    """Redis Pub/Sub implementation of INotificationPublisher."""
+class RedisNotificationPublisher(NotificationPublisher):
+    """Redis Pub/Sub implementation of NotificationPublisher."""
 
     def __init__(self, redis_client: aioredis.Redis):
         self.redis = redis_client

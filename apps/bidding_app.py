@@ -12,7 +12,7 @@ import redis.asyncio as aioredis
 from src.infrastructure.db import get_db_pool, close_db_pool
 from src.infrastructure.postgres_repo import PostgresAuctionRepository, PostgresBidRepository
 from src.infrastructure.kafka_producer import KafkaBidQueueProducer
-from src.interfaces.producers import IBidQueueProducer
+from src.interfaces.producers import BidQueueProducer
 
 KAFKA_BOOTSTRAP_SERVERS = os.getenv("KAFKA_BOOTSTRAP_SERVERS", "localhost:9092")
 KAFKA_BID_TOPIC = os.getenv("KAFKA_BID_TOPIC", "auction.bids.incoming")
@@ -65,7 +65,7 @@ async def place_bid_endpoint(auction_id: str, req: PlaceBidRequest):
         raise HTTPException(status_code=400, detail="Bid price must be greater than zero")
 
     tracking_id = str(uuid.uuid4())
-    producer: IBidQueueProducer = app.state.bid_producer
+    producer: BidQueueProducer = app.state.bid_producer
     await producer.enqueue_bid(
         tracking_id=tracking_id,
         auction_id=auction_id,

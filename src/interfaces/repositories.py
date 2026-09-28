@@ -4,7 +4,7 @@ from src.domain.entities import Auction, Bid
 from src.domain.enums import BidStatus
 
 
-class IAuctionRepository(ABC):
+class AuctionRepository(ABC):
     @abstractmethod
     async def create_with_item(
         self,
@@ -32,7 +32,7 @@ class IAuctionRepository(ABC):
         pass
 
 
-class IBidRepository(ABC):
+class BidRepository(ABC):
     @abstractmethod
     async def get_bids_by_auction(self, auction_id: str, limit: int = 50) -> List[Bid]:
         pass

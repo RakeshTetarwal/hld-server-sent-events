@@ -2,8 +2,8 @@ from typing import Optional, List
 import redis.asyncio as aioredis
 
 from src.domain.entities import Auction, Bid
-from src.interfaces.repositories import IAuctionRepository, IBidRepository
-from src.interfaces.publishers import INotificationPublisher
+from src.interfaces.repositories import AuctionRepository, BidRepository
+from src.interfaces.publishers import NotificationPublisher
 
 
 class AuctionManagerService:
@@ -11,10 +11,10 @@ class AuctionManagerService:
 
     def __init__(
         self,
-        auction_repo: IAuctionRepository,
-        bid_repo: IBidRepository,
+        auction_repo: AuctionRepository,
+        bid_repo: BidRepository,
         redis_client: aioredis.Redis,
-        notifier: Optional[INotificationPublisher] = None,
+        notifier: Optional[NotificationPublisher] = None,
     ):
         self.auction_repo = auction_repo
         self.bid_repo = bid_repo

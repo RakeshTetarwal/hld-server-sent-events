@@ -4,13 +4,13 @@ import asyncpg
 
 from src.domain.entities import Auction, Item, Bid
 from src.domain.enums import BidStatus, AuctionStatus
-from src.interfaces.repositories import IAuctionRepository, IBidRepository
+from src.interfaces.repositories import AuctionRepository, BidRepository
 from src.infrastructure import queries
 from src.infrastructure.db import get_db_pool, transaction
 
 
-class PostgresAuctionRepository(IAuctionRepository):
-    """PostgreSQL implementation of IAuctionRepository with optimistic locking."""
+class PostgresAuctionRepository(AuctionRepository):
+    """PostgreSQL implementation of AuctionRepository with optimistic locking."""
 
     def _row_to_auction(self, row: Optional[asyncpg.Record]) -> Optional[Auction]:
         if not row:
@@ -111,8 +111,8 @@ class PostgresAuctionRepository(IAuctionRepository):
         return self._row_to_auction(joined_row)
 
 
-class PostgresBidRepository(IBidRepository):
-    """PostgreSQL implementation of IBidRepository."""
+class PostgresBidRepository(BidRepository):
+    """PostgreSQL implementation of BidRepository."""
 
     async def get_bids_by_auction(self, auction_id: str, limit: int = 50) -> List[Bid]:
         db = await get_db_pool()

@@ -1,6 +1,6 @@
 from src.domain.value_objects import BidResult
-from src.interfaces.repositories import IAuctionRepository
-from src.interfaces.publishers import INotificationPublisher
+from src.interfaces.repositories import AuctionRepository
+from src.interfaces.publishers import NotificationPublisher
 
 
 class BiddingEngineService:
@@ -8,8 +8,8 @@ class BiddingEngineService:
 
     def __init__(
         self,
-        auction_repo: IAuctionRepository,
-        notifier: INotificationPublisher,
+        auction_repo: AuctionRepository,
+        notifier: NotificationPublisher,
     ):
         self.auction_repo = auction_repo
         self.notifier = notifier

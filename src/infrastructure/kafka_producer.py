@@ -1,11 +1,11 @@
 import json
 from datetime import datetime, timezone
 from aiokafka import AIOKafkaProducer
-from src.interfaces.producers import IBidQueueProducer
+from src.interfaces.producers import BidQueueProducer
 
 
-class KafkaBidQueueProducer(IBidQueueProducer):
-    """Kafka implementation of IBidQueueProducer, partitioned strictly by auction_id."""
+class KafkaBidQueueProducer(BidQueueProducer):
+    """Kafka implementation of BidQueueProducer, partitioned strictly by auction_id."""
 
     def __init__(self, producer: AIOKafkaProducer, topic: str):
         self.producer = producer

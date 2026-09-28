@@ -3,7 +3,7 @@ from typing import Optional
 from src.domain.value_objects import BidResult
 
 
-class INotificationPublisher(ABC):
+class NotificationPublisher(ABC):
     @abstractmethod
     async def publish_bid_outcome(self, result: BidResult) -> None:
         pass

@@ -62,9 +62,9 @@ A distributed, real-time Online Auction platform adhering to **SOLID principles*
 │   │   ├── enums.py              # StrEnum status types (BidStatus, AuctionStatus)
 │   │   └── value_objects.py      # Immutable Value Objects (BidResult)
 │   ├── interfaces/               # Dependency Inversion Ports (Abstract Interfaces)
-│   │   ├── repositories.py       # IAuctionRepository, IBidRepository
-│   │   ├── publishers.py         # INotificationPublisher (Observer Pattern)
-│   │   └── producers.py          # IBidQueueProducer
+│   │   ├── repositories.py       # AuctionRepository, BidRepository
+│   │   ├── publishers.py         # NotificationPublisher (Observer Pattern)
+│   │   └── producers.py          # BidQueueProducer
 │   ├── infrastructure/           # Adapters & External Drivers
 │   │   ├── db.py                 # AsyncPG connection pool & transaction manager
 │   │   ├── queries.py            # Centralized SQL statements (single-trip CTEs)
