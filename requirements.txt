@@ -1,0 +1,5 @@
+fastapi==0.141.1
+uvicorn[standard]==0.54.0
+aiokafka==0.14.0
+redis==8.1.0
+asyncpg==0.31.0

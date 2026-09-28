@@ -1,0 +1,92 @@
+Online Auction Project:
+
+Functional Requirements:
+    1. Allow users to add items to Auction
+    2. Allow users to view Auctions.
+    3. Allow users to place bid on the items in Auction
+     
+    Not handled Requiremnts:
+        1. Searching of items
+        2. Filtering of items
+        3. Sort items by price
+
+Non Functional Requiremnts
+    1. The system must maintain a strong consistency to ensure that all users should see the same highest big.
+    2. The system must be fault tolerent and durable so that any bid should not be dropped.
+    3. The system should display the highest bid in realtime to the users.
+    4. Should be scalable to 10M concurrent auctions.
+
+Core Entities:
+    Auction: It will contain details of the auction like start_date end_date base_price max_bid
+    User: user details who are adding items to the auction and who are placing bids.
+    Bid: The bids that are getting placed. It contains price, item_id.
+    Item: Details of the items like description, images, etc.
+
+APIS:
+    1. Creating an auction:
+        POST /auctions -> Auction & Item 
+        {
+            item: Item,
+            bid_start_date: date,
+            bid_end_date: date,
+            base_price: float
+        }
+    2. Getting details of an auction:
+        GET /auctions/{auction_id} -> Auction
+    
+    3. Placing a bid:
+        POST /auctions/{auctionid}/bids -> Bid
+            {
+                bid: Bid
+            }
+
+High Level Design:
+
+    1. Creating an auction:
+        We need a Auction Service behind an API-Gateway which will accepts the request of `POST /auctions` and then create an entry in the DB table auctions and items.
+    2. Placing a bid:
+        We need a Bidding Service which will handle the bids as follows:
+        (i). It will act as a producer for generating events for bidding.
+        (ii). Add those events in Kafka queue.
+        (iii). A worker will then get these events and process the event as per Deep Dive (i).
+
+Database Tables:
+Users:
+    id: str
+    name: str
+    email: str
+    ....
+
+Auctions:
+    id: str
+    item_id: str -> fk(Item)
+    start_date: datetime
+    end_date: datetime
+    base_price: float
+    createrId: str -> fk(User)
+    max_price: float
+    winning_bid_id: str -> fk(Users)
+
+Item:
+    id: str
+    description: str
+    images: List[str]
+
+Bid:
+    id: str
+    auction_id: str
+    price: float
+    placer_id: str -> fk(User)
+    created_at: datetime
+
+Deep Dives:
+(i). Whenever a worker gets a request to place a bid it will use optimistic locking on the auction row.
+     and if the bid is unsuccessful it will retry with request. We will use the max_price as the version number and before updating use the max_price to check if someone else has placed a higher bid or not.
+     In this we can create partitions using the auction_id. 
+
+(ii). Also for the realtime updates we will use SSE from the worker directly. And Whenever a new bid is placed each worker will be informed using the kafka pub/sub. Each server then will check if they have any client who is watching that auction.
+      And Whenever the client watches the auction then we can create this SSE connection.
+
+(iii). Also we need a delayed task scheduler that will automatically close the bid after the expiry. (a Redis sorted set with timestamps)
+
+(iv). We can also have api that can give us the bid history

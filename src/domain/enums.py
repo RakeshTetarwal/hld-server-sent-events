@@ -1,0 +1,16 @@
+from enum import StrEnum
+
+
+class BidStatus(StrEnum):
+    ACCEPTED = "ACCEPTED"
+    BID_TOO_LOW = "BID_TOO_LOW"
+    OUTBID = "OUTBID"
+    AUCTION_NOT_FOUND = "AUCTION_NOT_FOUND"
+    AUCTION_NOT_ACTIVE = "AUCTION_NOT_ACTIVE"
+    AUCTION_EXPIRED = "AUCTION_EXPIRED"
+
+
+class AuctionStatus(StrEnum):
+    ACTIVE = "ACTIVE"
+    CLOSED = "CLOSED"
+    CANCELLED = "CANCELLED"
