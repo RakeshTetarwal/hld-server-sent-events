@@ -88,7 +88,6 @@ A distributed, real-time Online Auction platform adhering to **SOLID principles*
 │   ├── test_suite.py             # 5/5 Functional integration tests
 │   └── test_concurrency.py       # 12-thread parallel OCC & synchronized SSE test
 ├── docker-compose.yml            # Complete multi-service orchestration
-├── main.py                       # Unified local CLI entrypoint
 ├── requirements.txt              # Pinned core dependencies
 └── README.md
 ```
