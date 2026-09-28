@@ -29,13 +29,13 @@ async def run_concurrency_stress_test():
     # 2. Start two SSE listener clients in background
     sse_events_1 = []
     sse_events_2 = []
-    stop_event = asyncio.Event()
 
     async def sse_worker(client_id, event_list):
-        async for evt in client.connect_sse(auction_id):
-            event_list.append(evt)
-            if stop_event.is_set():
-                break
+        try:
+            async for evt in client.connect_sse(auction_id):
+                event_list.append(evt)
+        except asyncio.CancelledError:
+            pass
 
     task1 = asyncio.create_task(sse_worker("client-1", sse_events_1))
     task2 = asyncio.create_task(sse_worker("client-2", sse_events_2))
@@ -76,10 +76,10 @@ async def run_concurrency_stress_test():
     print(f"5. Total successful winning bids in history: {len(bids)}")
     assert len(bids) > 0
 
-    # 7. Verify both SSE clients received identical events
-    stop_event.set()
+    # 7. Stop SSE clients cleanly and verify identical event streams
     task1.cancel()
     task2.cancel()
+    await asyncio.gather(task1, task2, return_exceptions=True)
 
     accepted_1 = [e for e in sse_events_1 if e.get("type") == "bid_accepted"]
     accepted_2 = [e for e in sse_events_2 if e.get("type") == "bid_accepted"]

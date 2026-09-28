@@ -101,13 +101,13 @@ class TestAuctionAsyncClient(unittest.IsolatedAsyncioTestCase):
         auction_id = auction["id"]
 
         events_received = []
-        stop_event = asyncio.Event()
 
         async def listen():
-            async for event in self.client.connect_sse(auction_id):
-                events_received.append(event)
-                if stop_event.is_set():
-                    break
+            try:
+                async for event in self.client.connect_sse(auction_id):
+                    events_received.append(event)
+            except asyncio.CancelledError:
+                pass
 
         listener_task = asyncio.create_task(listen())
         await asyncio.sleep(0.5)
@@ -134,8 +134,8 @@ class TestAuctionAsyncClient(unittest.IsolatedAsyncioTestCase):
         _, history, _ = self.client.get_bids(auction_id)
         self.assertEqual(len(history), 3)
 
-        stop_event.set()
         listener_task.cancel()
+        await asyncio.gather(listener_task, return_exceptions=True)
 
         event_types = [e.get("type") for e in events_received]
         self.assertIn("snapshot", event_types)
